@@ -1,0 +1,1331 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gestión Académica</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f3f6;
+    color: #202631;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #202631;
+    color: white;
+    position: fixed;
+    padding: 25px 18px;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.logo span {
+    color: #3694e8;
+}
+
+.menu a {
+    display: block;
+    color: #d5dce5;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.menu a.active,
+.menu a:hover {
+    background: #1769aa;
+    color: white;
+}
+
+.main {
+    margin-left: 250px;
+    padding: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header p {
+    color: #87909d;
+    margin-top: 8px;
+}
+
+.profile {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 5px solid #1769aa;
+    box-shadow: 0 3px 12px #00000008;
+}
+
+.card:nth-child(2) {
+    border-color: #d93643;
+}
+
+.card:nth-child(3) {
+    border-color: #87909d;
+}
+
+.card h3 {
+    color: #87909d;
+    font-size: 14px;
+}
+
+.card h2 {
+    font-size: 30px;
+    margin-top: 15px;
+}
+
+.content {
+    margin-top: 30px;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.content p {
+    color: #87909d;
+    margin-top: 12px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.section-title {
+    margin-bottom: 22px;
+}
+
+.section-title p {
+    color: #87909d;
+    margin-top: 8px;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #d9dee7;
+    border-radius: 7px;
+    outline: none;
+    width: 100%;
+}
+
+input:focus {
+    border-color: #1769aa;
+}
+
+.search {
+    max-width: 350px;
+}
+
+button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #1769aa;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #12558c;
+}
+
+.btn-danger {
+    background: #d93643;
+    color: white;
+}
+
+.btn-edit {
+    background: #e9eef5;
+    color: #1769aa;
+    margin-right: 5px;
+}
+
+.table-container {
+    background: white;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 3px 12px #00000008;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #edf0f4;
+    font-size: 14px;
+}
+
+th {
+    background: #f7f8fa;
+    color: #596273;
+}
+
+.form-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 750px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.message {
+    margin: 15px 0;
+    padding: 12px;
+    border-radius: 7px;
+    display: none;
+}
+
+.message.error {
+    display: block;
+    background: #ffe5e7;
+    color: #b42332;
+}
+
+.message.success {
+    display: block;
+    background: #e4f5e9;
+    color: #16713b;
+}
+
+.empty {
+    padding: 25px;
+    text-align: center;
+    color: #87909d;
+}
+
+@media(max-width: 800px) {
+    .sidebar {
+        width: 190px;
+    }
+
+    .main {
+        margin-left: 190px;
+        padding: 18px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 550px) {
+    .sidebar {
+        width: 65px;
+        padding: 15px 5px;
+    }
+
+    .logo {
+        font-size: 10px;
+        overflow-wrap: anywhere;
+    }
+
+    .menu a {
+        font-size: 0;
+        text-align: center;
+        padding: 13px 3px;
+    }
+
+    .menu a::first-letter {
+        font-size: 16px;
+    }
+
+    .main {
+        margin-left: 65px;
+        padding: 12px;
+    }
+
+    .toolbar {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">GESTIÓN <span>ACADÉMICA</span></div>
+
+    <nav class="menu">
+        <a class="active" data-section="dashboard">⌂ Dashboard</a>
+        <a data-section="estudiantes">♙ Estudiantes</a>
+        <a data-section="cursos">▣ Cursos</a>
+        <a data-section="matriculas">▤ Matrículas</a>
+        <a data-section="reportes">▧ Reportes</a>
+        <a data-section="configuracion">⚙ Configuración</a>
+    </nav>
+</aside>
+
+<main class="main">
+
+    <header class="header">
+        <div>
+            <h1 id="pageTitle">Panel principal</h1>
+            <p>Sistema de Gestión Académica</p>
+        </div>
+        <div class="profile">Administrador</div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="section active">
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total de estudiantes</h3>
+                <h2 id="totalEstudiantes">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Cursos registrados</h3>
+                <h2 id="totalCursos">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Matrículas</h3>
+                <h2>0</h2>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>Bienvenido al sistema</h2>
+            <p>Desde este panel podrás administrar estudiantes,
+            cursos y matrículas de manera organizada.</p>
+        </div>
+    </section>
+
+    <!-- ESTUDIANTES -->
+    <section id="estudiantes" class="section">
+
+        <div class="section-title">
+            <h2>Gestión de estudiantes</h2>
+            <p>Administra los estudiantes registrados en el sistema.</p>
+        </div>
+
+        <div class="toolbar">
+            <input
+                type="text"
+                id="buscar"
+                class="search"
+                placeholder="Buscar por nombre o código..."
+            >
+
+            <button class="btn-primary" id="btnNuevo">
+                + Nuevo estudiante
+            </button>
+        </div>
+
+        <div id="mensajeLista" class="message"></div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Correo</th>
+                        <th>Carrera</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaEstudiantes">
+                    <tr>
+                        <td colspan="7" class="empty">
+                            Cargando estudiantes...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FORMULARIO DE ESTUDIANTES -->
+    <section id="formulario" class="section">
+
+        <div class="section-title">
+            <h2 id="tituloFormulario">Registrar estudiante</h2>
+            <p>Completa los datos del estudiante.</p>
+        </div>
+
+        <div class="form-container">
+
+            <div id="mensajeFormulario" class="message"></div>
+
+            <form id="formEstudiante">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="codigo">Código</label>
+                        <input id="codigo" required maxlength="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombres">Nombres</label>
+                        <input id="nombres" required maxlength="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apellidos">Apellidos</label>
+                        <input id="apellidos" required maxlength="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="correo">Correo electrónico</label>
+                        <input id="correo" type="email" required maxlength="120">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carrera">Carrera profesional</label>
+                        <input id="carrera" required maxlength="100">
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        Guardar estudiante
+                    </button>
+
+                    <button type="button" id="btnCancelar" class="btn-danger">
+                        Cancelar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- CURSOS -->
+    <section id="cursos" class="section">
+
+        <div class="section-title">
+            <h2>Gestión de cursos</h2>
+            <p>Administra los cursos registrados en el sistema académico.</p>
+        </div>
+
+        <div class="toolbar">
+            <input
+                type="text"
+                id="buscarCurso"
+                class="search"
+                placeholder="Buscar por nombre o código..."
+            >
+
+            <button type="button" class="btn-primary" id="btnNuevoCurso">
+                + Nuevo curso
+            </button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Créditos</th>
+                        <th>Docente</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaCursos">
+                    <tr>
+                        <td colspan="8" class="empty">
+                            Cargando cursos...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FORMULARIO DE CURSOS -->
+        <div id="formularioCurso" class="form-container"
+             style="display:none; margin-top:22px;">
+
+            <div class="section-title">
+                <h2 id="tituloFormularioCurso">Registrar curso</h2>
+                <p>Completa los datos del curso.</p>
+            </div>
+
+            <div id="mensajeFormularioCurso" class="message"></div>
+
+            <form id="formCurso">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="codigoCurso">Código</label>
+                        <input id="codigoCurso" required maxlength="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreCurso">Nombre</label>
+                        <input id="nombreCurso" required maxlength="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcionCurso">Descripción</label>
+                        <input id="descripcionCurso" maxlength="255">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="creditosCurso">Créditos</label>
+                        <input id="creditosCurso" type="number"
+                               min="1" step="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="docenteCurso">Docente</label>
+                        <input id="docenteCurso" required maxlength="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estadoCurso">Estado</label>
+                        <select id="estadoCurso">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary"
+                            id="btnGuardarCurso">
+                        Guardar curso
+                    </button>
+
+                    <button type="button" class="btn-danger"
+                            id="btnCancelarCurso">
+                        Cancelar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </section>
+
+    <!-- MATRÍCULAS -->
+    <section id="matriculas" class="section content">
+        <h2>Gestión de matrículas</h2>
+        <p>Este módulo estará disponible en la siguiente etapa.</p>
+    </section>
+
+    <!-- REPORTES -->
+    <section id="reportes" class="section content">
+        <h2>Reportes académicos</h2>
+        <p>Este módulo estará disponible en la siguiente etapa.</p>
+    </section>
+
+    <!-- CONFIGURACIÓN -->
+    <section id="configuracion" class="section content">
+        <h2>Configuración</h2>
+        <p>Configuraciones del sistema académico.</p>
+    </section>
+
+</main>
+
+<script>
+
+// =====================================
+// CONFIGURACIÓN DE LAS API
+// =====================================
+
+const API = 'http://localhost:4000/api/estudiantes';
+const API_CURSOS = 'http://localhost:4000/api/cursos';
+
+let estudiantes = [];
+let idEdicion = null;
+
+let cursos = [];
+let idEdicionCurso = null;
+
+
+// =====================================
+// CAMBIAR SECCIONES DEL MENÚ
+// =====================================
+
+document.querySelectorAll('.menu a').forEach(enlace => {
+
+    enlace.addEventListener('click', () => {
+
+        const seccion = enlace.dataset.section;
+
+        document.querySelectorAll('.section').forEach(s => {
+            s.classList.remove('active');
+        });
+
+        document.getElementById(seccion).classList.add('active');
+
+        document.querySelectorAll('.menu a').forEach(a => {
+            a.classList.remove('active');
+        });
+
+        enlace.classList.add('active');
+
+        const titulos = {
+            dashboard: 'Panel principal',
+            estudiantes: 'Estudiantes',
+            cursos: 'Cursos',
+            matriculas: 'Matrículas',
+            reportes: 'Reportes',
+            configuracion: 'Configuración'
+        };
+
+        document.getElementById('pageTitle').textContent =
+            titulos[seccion];
+
+        if (seccion === 'estudiantes') {
+            cargarEstudiantes();
+        }
+
+        if (seccion === 'cursos') {
+            cargarCursos();
+        }
+
+    });
+
+});
+
+
+// =====================================
+// CARGAR ESTUDIANTES
+// =====================================
+
+async function cargarEstudiantes() {
+
+    const tabla = document.getElementById('tablaEstudiantes');
+
+    tabla.innerHTML = `
+        <tr>
+            <td colspan="7" class="empty">Cargando...</td>
+        </tr>
+    `;
+
+    try {
+
+        const respuesta = await fetch(API);
+
+        if (!respuesta.ok) {
+            throw new Error('No se pudieron cargar los estudiantes');
+        }
+
+        estudiantes = await respuesta.json();
+
+        document.getElementById('totalEstudiantes').textContent =
+            estudiantes.length;
+
+        mostrarEstudiantes(estudiantes);
+
+    } catch (error) {
+
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    Error al conectar con el servidor.
+                    Verifica que Node.js esté funcionando.
+                </td>
+            </tr>
+        `;
+
+        console.error(error);
+
+    }
+
+}
+
+
+// =====================================
+// PROTEGER TEXTO MOSTRADO EN HTML
+// =====================================
+
+function escapar(texto) {
+
+    return String(texto ?? '').replace(/[&<>"']/g, caracter => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[caracter]);
+
+}
+
+
+// =====================================
+// MOSTRAR TABLA DE ESTUDIANTES
+// =====================================
+
+function mostrarEstudiantes(lista) {
+
+    const tabla = document.getElementById('tablaEstudiantes');
+
+    if (lista.length === 0) {
+
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    No hay estudiantes registrados.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    tabla.innerHTML = lista.map(e => `
+        <tr>
+            <td>${escapar(e.id)}</td>
+            <td>${escapar(e.codigo)}</td>
+            <td>${escapar(e.nombres)}</td>
+            <td>${escapar(e.apellidos)}</td>
+            <td>${escapar(e.correo)}</td>
+            <td>${escapar(e.carrera)}</td>
+            <td>
+                <button class="btn-edit"
+                    data-action="editar"
+                    data-id="${escapar(e.id)}">
+                    Editar
+                </button>
+
+                <button class="btn-danger"
+                    data-action="eliminar"
+                    data-id="${escapar(e.id)}">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+}
+
+
+// =====================================
+// BUSCAR ESTUDIANTES
+// =====================================
+
+document.getElementById('buscar').addEventListener('input', e => {
+
+    const texto = e.target.value.toLowerCase();
+
+    const filtrados = estudiantes.filter(estudiante =>
+        `${estudiante.codigo} ${estudiante.nombres} ${estudiante.apellidos}`
+        .toLowerCase().includes(texto)
+    );
+
+    mostrarEstudiantes(filtrados);
+
+});
+
+
+// =====================================
+// ABRIR FORMULARIO NUEVO ESTUDIANTE
+// =====================================
+
+document.getElementById('btnNuevo').addEventListener('click', () => {
+
+    idEdicion = null;
+
+    document.getElementById('formEstudiante').reset();
+
+    document.getElementById('tituloFormulario').textContent =
+        'Registrar estudiante';
+
+    document.querySelector('#formEstudiante button[type="submit"]')
+        .textContent = 'Guardar estudiante';
+
+    mostrarSeccion('formulario');
+
+});
+
+
+// =====================================
+// MOSTRAR SECCIÓN
+// =====================================
+
+function mostrarSeccion(nombre) {
+
+    document.querySelectorAll('.section').forEach(s => {
+        s.classList.remove('active');
+    });
+
+    document.getElementById(nombre).classList.add('active');
+
+    document.querySelectorAll('.menu a').forEach(a => {
+        a.classList.toggle('active', a.dataset.section === nombre);
+    });
+
+    document.getElementById('pageTitle').textContent =
+        nombre === 'formulario' ? 'Formulario de estudiante' : 'Estudiantes';
+
+}
+
+
+// =====================================
+// CANCELAR FORMULARIO DE ESTUDIANTE
+// =====================================
+
+document.getElementById('btnCancelar').addEventListener('click', () => {
+
+    document.getElementById('formEstudiante').reset();
+
+    idEdicion = null;
+
+    mostrarSeccion('estudiantes');
+
+    cargarEstudiantes();
+
+});
+
+
+// =====================================
+// GUARDAR O ACTUALIZAR ESTUDIANTE
+// =====================================
+
+document.getElementById('formEstudiante').addEventListener('submit',
+async e => {
+
+    e.preventDefault();
+
+    const datos = {
+        codigo: document.getElementById('codigo').value.trim(),
+        nombres: document.getElementById('nombres').value.trim(),
+        apellidos: document.getElementById('apellidos').value.trim(),
+        correo: document.getElementById('correo').value.trim(),
+        carrera: document.getElementById('carrera').value.trim()
+    };
+
+    const mensaje = document.getElementById('mensajeFormulario');
+
+    try {
+
+        const respuesta = await fetch(
+            idEdicion ? `${API}/${idEdicion}` : API,
+            {
+                method: idEdicion ? 'PUT' : 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(datos)
+            }
+        );
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(resultado.mensaje || 'No se pudo guardar');
+        }
+
+        alert(idEdicion
+            ? 'Estudiante actualizado correctamente.'
+            : 'Estudiante registrado correctamente.');
+
+        document.getElementById('formEstudiante').reset();
+
+        idEdicion = null;
+
+        mostrarSeccion('estudiantes');
+
+        await cargarEstudiantes();
+
+    } catch (error) {
+
+        mensaje.textContent = error.message;
+        mensaje.className = 'message error';
+
+    }
+
+});
+
+
+// =====================================
+// EDITAR Y ELIMINAR ESTUDIANTES
+// =====================================
+
+document.getElementById('tablaEstudiantes').addEventListener('click',
+async e => {
+
+    const boton = e.target.closest('button[data-action]');
+
+    if (!boton) return;
+
+    const id = boton.dataset.id;
+
+    const accion = boton.dataset.action;
+
+    if (accion === 'editar') {
+
+        const estudiante = estudiantes.find(x => String(x.id) === id);
+
+        if (!estudiante) return;
+
+        idEdicion = id;
+
+        document.getElementById('codigo').value = estudiante.codigo;
+        document.getElementById('nombres').value = estudiante.nombres;
+        document.getElementById('apellidos').value = estudiante.apellidos;
+        document.getElementById('correo').value = estudiante.correo;
+        document.getElementById('carrera').value = estudiante.carrera;
+
+        document.getElementById('tituloFormulario').textContent =
+            'Editar estudiante';
+
+        document.querySelector('#formEstudiante button[type="submit"]')
+            .textContent = 'Actualizar estudiante';
+
+        document.getElementById('mensajeFormulario').className = 'message';
+
+        mostrarSeccion('formulario');
+
+    }
+
+    if (accion === 'eliminar') {
+
+        const confirmar = confirm(
+            '¿Estás seguro de eliminar este estudiante?'
+        );
+
+        if (!confirmar) return;
+
+        try {
+
+            const respuesta = await fetch(`${API}/${id}`, {
+                method: 'DELETE'
+            });
+
+            const resultado = await respuesta.json();
+
+            if (!respuesta.ok) {
+                throw new Error(resultado.mensaje || 'No se pudo eliminar');
+            }
+
+            alert('Estudiante eliminado correctamente.');
+
+            await cargarEstudiantes();
+
+        } catch (error) {
+
+            alert(error.message);
+
+        }
+
+    }
+
+});
+
+
+// =====================================
+// GESTIÓN DE CURSOS
+// =====================================
+
+// CARGAR CURSOS
+
+async function cargarCursos() {
+
+    const tabla = document.getElementById('tablaCursos');
+
+    tabla.innerHTML = `
+        <tr>
+            <td colspan="8" class="empty">Cargando cursos...</td>
+        </tr>
+    `;
+
+    try {
+
+        const respuesta = await fetch(API_CURSOS);
+
+        if (!respuesta.ok) {
+            throw new Error('No se pudieron cargar los cursos.');
+        }
+
+        cursos = await respuesta.json();
+
+        document.getElementById('totalCursos').textContent =
+            cursos.length;
+
+        mostrarCursos(cursos);
+
+    } catch (error) {
+
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    Error al cargar los cursos.
+                    Verifica que los servidores estén funcionando.
+                </td>
+            </tr>
+        `;
+
+        console.error(error);
+
+    }
+
+}
+
+
+// MOSTRAR CURSOS
+
+function mostrarCursos(lista) {
+
+    const tabla = document.getElementById('tablaCursos');
+
+    if (lista.length === 0) {
+
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No hay cursos registrados.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    tabla.innerHTML = lista.map(curso => `
+        <tr>
+            <td>${escapar(curso.id)}</td>
+            <td>${escapar(curso.codigo)}</td>
+            <td>${escapar(curso.nombre)}</td>
+            <td>${escapar(curso.descripcion || '')}</td>
+            <td>${escapar(curso.creditos)}</td>
+            <td>${escapar(curso.docente)}</td>
+            <td>${escapar(curso.estado || 'Activo')}</td>
+            <td>
+                <button class="btn-edit"
+                    data-curso-action="editar"
+                    data-id="${escapar(curso.id)}">
+                    Editar
+                </button>
+
+                <button class="btn-danger"
+                    data-curso-action="eliminar"
+                    data-id="${escapar(curso.id)}">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+}
+
+
+// BUSCAR CURSOS
+
+document.getElementById('buscarCurso').addEventListener('input', e => {
+
+    const texto = e.target.value.toLowerCase().trim();
+
+    const filtrados = cursos.filter(curso =>
+        `${curso.codigo} ${curso.nombre} ${curso.docente}`
+        .toLowerCase()
+        .includes(texto)
+    );
+
+    mostrarCursos(filtrados);
+
+});
+
+
+// ABRIR FORMULARIO DE NUEVO CURSO
+
+document.getElementById('btnNuevoCurso').addEventListener('click', () => {
+
+    idEdicionCurso = null;
+
+    document.getElementById('formCurso').reset();
+
+    document.getElementById('tituloFormularioCurso').textContent =
+        'Registrar curso';
+
+    document.getElementById('btnGuardarCurso').textContent =
+        'Guardar curso';
+
+    document.getElementById('mensajeFormularioCurso').className =
+        'message';
+
+    document.getElementById('formularioCurso').style.display = 'block';
+
+    document.getElementById('formularioCurso')
+        .scrollIntoView({ behavior: 'smooth' });
+
+});
+
+
+// CANCELAR FORMULARIO DE CURSO
+
+document.getElementById('btnCancelarCurso').addEventListener('click', () => {
+
+    document.getElementById('formCurso').reset();
+
+    idEdicionCurso = null;
+
+    document.getElementById('formularioCurso').style.display = 'none';
+
+    document.getElementById('mensajeFormularioCurso').className =
+        'message';
+
+});
+
+
+// REGISTRAR O ACTUALIZAR CURSO
+
+document.getElementById('formCurso').addEventListener('submit', async e => {
+
+    e.preventDefault();
+
+    const datos = {
+        codigo: document.getElementById('codigoCurso').value.trim(),
+        nombre: document.getElementById('nombreCurso').value.trim(),
+        descripcion: document.getElementById('descripcionCurso').value.trim(),
+        creditos: Number(document.getElementById('creditosCurso').value),
+        docente: document.getElementById('docenteCurso').value.trim(),
+        estado: document.getElementById('estadoCurso').value
+    };
+
+    const mensaje = document.getElementById('mensajeFormularioCurso');
+
+    try {
+
+        const respuesta = await fetch(
+            idEdicionCurso
+                ? `${API_CURSOS}/${idEdicionCurso}`
+                : API_CURSOS,
+            {
+                method: idEdicionCurso ? 'PUT' : 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(datos)
+            }
+        );
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(
+                resultado.mensaje || 'No se pudo guardar el curso.'
+            );
+        }
+
+        alert(idEdicionCurso
+            ? 'Curso actualizado correctamente.'
+            : 'Curso registrado correctamente.');
+
+        document.getElementById('formCurso').reset();
+
+        idEdicionCurso = null;
+
+        document.getElementById('formularioCurso').style.display = 'none';
+
+        await cargarCursos();
+
+    } catch (error) {
+
+        mensaje.textContent = error.message;
+        mensaje.className = 'message error';
+
+    }
+
+});
+
+
+// EDITAR Y ELIMINAR CURSOS
+
+document.getElementById('tablaCursos').addEventListener('click', async e => {
+
+    const boton = e.target.closest('button[data-curso-action]');
+
+    if (!boton) return;
+
+    const id = boton.dataset.id;
+
+    const accion = boton.dataset.cursoAction;
+
+
+    // EDITAR CURSO
+
+    if (accion === 'editar') {
+
+        const curso = cursos.find(
+            item => String(item.id) === id
+        );
+
+        if (!curso) return;
+
+        idEdicionCurso = id;
+
+        document.getElementById('codigoCurso').value =
+            curso.codigo || '';
+
+        document.getElementById('nombreCurso').value =
+            curso.nombre || '';
+
+        document.getElementById('descripcionCurso').value =
+            curso.descripcion || '';
+
+        document.getElementById('creditosCurso').value =
+            curso.creditos || '';
+
+        document.getElementById('docenteCurso').value =
+            curso.docente || '';
+
+        document.getElementById('estadoCurso').value =
+            curso.estado || 'Activo';
+
+        document.getElementById('tituloFormularioCurso').textContent =
+            'Editar curso';
+
+        document.getElementById('btnGuardarCurso').textContent =
+            'Actualizar curso';
+
+        document.getElementById('mensajeFormularioCurso').className =
+            'message';
+
+        document.getElementById('formularioCurso').style.display = 'block';
+
+        document.getElementById('formularioCurso')
+            .scrollIntoView({ behavior: 'smooth' });
+
+    }
+
+
+    // ELIMINAR CURSO
+
+    if (accion === 'eliminar') {
+
+        const confirmar = confirm(
+            '¿Estás seguro de eliminar este curso?'
+        );
+
+        if (!confirmar) return;
+
+        try {
+
+            const respuesta = await fetch(
+                `${API_CURSOS}/${id}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+            const resultado = await respuesta.json();
+
+            if (!respuesta.ok) {
+                throw new Error(
+                    resultado.mensaje || 'No se pudo eliminar el curso.'
+                );
+            }
+
+            alert('Curso eliminado correctamente.');
+
+            await cargarCursos();
+
+        } catch (error) {
+
+            alert(error.message);
+
+        }
+
+    }
+
+});
+
+
+// =====================================
+// INICIAR SISTEMA
+// =====================================
+
+cargarEstudiantes();
+
+</script>
+
+</body>
+</html>
